@@ -1,15 +1,141 @@
 <!DOCTYPE html>
 <html lang="en">
   {% include head.html %}
+  <style>
+    :root {
+      --bg-color: #f8f9fa;
+      --text-color: #555;
+      --heading-color: #333;
+      --theme-color: #1b4332;
+      --theme-color-rgb: 27, 67, 50;
+      --card-bg: rgba(255, 255, 255, 0.75);
+      --card-border: rgba(233, 236, 239, 0.7);
+      --card-shadow: 0 4px 12px rgba(0, 0, 0, 0.02);
+      --card-shadow-hover: 0 6px 18px rgba(0, 0, 0, 0.06);
+      --card-border-hover: rgba(27, 67, 50, 0.2);
+      --link-color: #1b4332;
+      --link-hover-color: #40916c;
+      --timeline-line: #e9ecef;
+    }
+    [data-theme="dark"] {
+      --bg-color: #0c1410;
+      --text-color: #a3b8aa;
+      --heading-color: #f1f5f9;
+      --theme-color: #52b788;
+      --theme-color-rgb: 82, 183, 136;
+      --card-bg: rgba(20, 32, 26, 0.65);
+      --card-border: rgba(255, 255, 255, 0.08);
+      --card-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+      --card-shadow-hover: 0 6px 18px rgba(0, 0, 0, 0.25);
+      --card-border-hover: rgba(82, 183, 136, 0.3);
+      --link-color: #52b788;
+      --link-hover-color: #74c69d;
+      --timeline-line: #203328;
+    }
+
+    body {
+      background: var(--bg-color);
+      color: var(--text-color);
+      transition: background-color 0.4s ease, color 0.4s ease;
+    }
+    h1, h2, h3, h4, h5, h6, strong {
+      color: var(--heading-color) !important;
+      transition: color 0.4s ease;
+    }
+    p, span, li, td, th {
+      color: var(--text-color);
+      transition: color 0.4s ease;
+    }
+    hr,
+    #about,
+    #publications,
+    #cv,
+    #talks {
+      border-color: var(--card-border) !important;
+      transition: border-color 0.4s ease;
+    }
+    a {
+      color: var(--link-color);
+      transition: color 0.3s ease;
+    }
+    a:hover {
+      color: var(--link-hover-color);
+    }
+    
+    [data-theme="dark"] .footer {
+      background: #080d0a !important;
+      transition: background-color 0.4s ease;
+    }
+
+    .scroll-reveal {
+      opacity: 0;
+      transform: translateY(30px);
+      transition: opacity 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+                  transform 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+      will-change: opacity, transform;
+    }
+    .scroll-reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* Underline slide hover effect for links */
+    .header-links a,
+    .pub-links a,
+    .talk-links a {
+      text-decoration: none !important;
+      background-image: linear-gradient(to right, var(--theme-color), var(--theme-color));
+      background-position: 0% 100%;
+      background-repeat: no-repeat;
+      background-size: 0% 2px;
+      transition: background-size 0.25s ease-out, color 0.3s ease;
+      padding-bottom: 2px;
+    }
+    .header-links a:hover,
+    .pub-links a:hover,
+    .talk-links a:hover {
+      background-size: 100% 2px;
+    }
+
+    /* Theme Toggle Button */
+    .theme-toggle-btn {
+      position: fixed;
+      bottom: 25px;
+      right: 25px;
+      width: 46px;
+      height: 46px;
+      border-radius: 50%;
+      background: var(--theme-color);
+      color: #fff;
+      border: none;
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.16);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.15rem;
+      z-index: 9999;
+      transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275),
+                  background-color 0.3s ease,
+                  box-shadow 0.3s ease;
+    }
+    .theme-toggle-btn:hover {
+      transform: scale(1.1);
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
+    }
+    .theme-toggle-btn:active {
+      transform: scale(0.95);
+    }
+  </style>
   <body>
       {% include header.html %}
-      <section id="about">
+      <section id="about" class="scroll-reveal">
         {% include about.html %}
       </section>
-      <section id="publications">
+      <section id="publications" class="scroll-reveal">
         {% include publications.html %}
       </section>
-      <section id="cv">
+      <section id="cv" class="scroll-reveal">
         {% include cv.html %}
       </section>
       <section id="talks">
@@ -17,4 +143,74 @@
       </section>
         {{ content }}
       {% include footer.html %}
+      <script>
+        (function () {
+          // Scroll Reveal
+          var initScrollReveal = function () {
+            var revealElements = document.querySelectorAll('.scroll-reveal');
+            if (!revealElements.length) return;
+
+            if ('IntersectionObserver' in window) {
+              var observerOptions = {
+                root: null,
+                rootMargin: '0px 0px -80px 0px',
+                threshold: 0.05
+              };
+
+              var observer = new IntersectionObserver(function (entries, observer) {
+                entries.forEach(function (entry) {
+                  if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                    observer.unobserve(entry.target);
+                  }
+                });
+              }, observerOptions);
+
+              revealElements.forEach(function (el) {
+                observer.observe(el);
+              });
+            } else {
+              revealElements.forEach(function (el) {
+                el.classList.add('visible');
+              });
+            }
+          };
+
+          // Theme Toggle
+          var initThemeToggle = function () {
+            var currentTheme = document.documentElement.getAttribute('data-theme') || 'light';
+            var toggleBtn = document.createElement('button');
+            toggleBtn.className = 'theme-toggle-btn';
+            toggleBtn.setAttribute('aria-label', 'Toggle theme');
+            
+            var icon = document.createElement('i');
+            icon.className = currentTheme === 'dark' ? 'fas fa-sun' : 'fas fa-moon';
+            toggleBtn.appendChild(icon);
+            document.body.appendChild(toggleBtn);
+
+            toggleBtn.addEventListener('click', function () {
+              var nextTheme = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+              document.documentElement.setAttribute('data-theme', nextTheme);
+              localStorage.setItem('theme', nextTheme);
+              
+              icon.className = nextTheme === 'dark' ? 'fas fa-sun' : 'fas fa-moon';
+              
+              toggleBtn.style.transform = 'scale(0.8) rotate(360deg)';
+              setTimeout(function () {
+                toggleBtn.style.transform = '';
+              }, 300);
+            });
+          };
+
+          if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', function() {
+              initScrollReveal();
+              initThemeToggle();
+            });
+          } else {
+            initScrollReveal();
+            initThemeToggle();
+          }
+        })();
+      </script>
   </body>
