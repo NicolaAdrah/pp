@@ -1,118 +1,381 @@
 /* sweetScroll load */
 document.addEventListener("DOMContentLoaded", function () {
-  new SweetScroll({/* some options */});
+  new SweetScroll({/* some options */ });
 
-  /* particlesJS.load(@dom-id, @path-json, @callback (optional)); */
-  particlesJS('particles-js', {
-    "particles": {
-      "number": {
-        "value": 30,
-        "density": {
-          "enable": true,
-          "value_area": 800
-        }
-      },
-      "color": {
-        "value": "#ffffff"
-      },
-      "shape": {
-        "type": "polygon",
-        "stroke": {
-          "width": 0,
-          "color": "#000000"
-        },
-        "polygon": {
-          "nb_sides": 5
-        },
-        "image": {
-          "src": "img/github.svg",
-          "width": 100,
-          "height": 100
-        }
-      },
-      "opacity": {
-        "value": 0.5,
-        "random": false,
-        "anim": {
-          "enable": false,
-          "speed": 1,
-          "opacity_min": 0.1,
-          "sync": false
-        }
-      },
-      "size": {
-        "value": 3,
-        "random": true,
-        "anim": {
-          "enable": false,
-          "speed": 19.18081918081918,
-          "size_min": 0.1,
-          "sync": false
-        }
-      },
-      "line_linked": {
-        "enable": true,
-        "distance": 150,
-        "color": "#ffffff",
-        "opacity": 0.4,
-        "width": 1
-      },
-      "move": {
-        "enable": true,
-        "speed": 4,
-        "direction": "none",
-        "random": true,
-        "straight": false,
-        "out_mode": "out",
-        "bounce": false,
-        "attract": {
-          "enable": false,
-          "rotateX": 600,
-          "rotateY": 1200
-        }
-      },
-      nb: 80
-    },
-    "interactivity": {
-      "detect_on": "canvas",
-      "events": {
-        "onhover": {
-          "enable": false,
-          "mode": "grab"
-        },
-        "onclick": {
-          "enable": true,
-          "mode": "push"
-        },
-        "resize": true
-      },
-      "modes": {
-        "grab": {
-          "distance": 400,
-          "line_linked": {
-            "opacity": 1
+  var initNeuralNet = function () {
+    var container = document.getElementById('particles-js');
+    if (!container) {
+      setTimeout(initNeuralNet, 50);
+      return;
+    }
+
+    var canvas = container.querySelector('.neural-net-canvas');
+    if (!canvas) {
+      canvas = document.createElement('canvas');
+      canvas.className = 'neural-net-canvas';
+      canvas.style.position = 'absolute';
+      canvas.style.top = '0';
+      canvas.style.left = '0';
+      canvas.style.width = '100%';
+      canvas.style.height = '100%';
+      canvas.style.zIndex = '0';
+      container.appendChild(canvas);
+    }
+
+    var ctx = canvas.getContext('2d');
+    var width = canvas.width = container.offsetWidth;
+    var height = canvas.height = container.offsetHeight;
+
+    window.addEventListener('resize', function () {
+      width = canvas.width = container.offsetWidth;
+      height = canvas.height = container.offsetHeight;
+      setupNetworks();
+    });
+
+    var networks = [];
+
+    var setupNetworks = function () {
+      networks = [];
+      var numNets = 12;
+      var layersOptions = [
+        [2, 2],
+        [2, 3, 2],
+        [1, 2, 1],
+        [2, 2, 1],
+        [1, 2, 2],
+        [2, 1]
+      ];
+
+      for (var k = 0; k < numNets; k++) {
+        var layers = layersOptions[k % layersOptions.length];
+        var w = 120 + Math.random() * 100;
+        var h = 160 + Math.random() * 140;
+
+        var x = Math.random() * (width - 120) + 60;
+        var y = Math.random() * (height - 120) + 60;
+        var vx = (Math.random() - 0.5) * 0.5;
+        var vy = (Math.random() - 0.5) * 0.5;
+
+        var netNodes = [];
+        var netConnections = [];
+        var netSignals = [];
+
+        var layerSpacing = layers.length > 1 ? w / (layers.length - 1) : 0;
+
+        for (var l = 0; l < layers.length; l++) {
+          var numNodes = layers[l];
+          var relativeX = -w / 2 + layerSpacing * l;
+          var nodeSpacing = h / (numNodes + 1);
+
+          for (var n = 0; n < numNodes; n++) {
+            var relativeY = -h / 2 + nodeSpacing * (n + 1);
+            netNodes.push({
+              id: netNodes.length,
+              layer: l,
+              relX: relativeX,
+              relY: relativeY,
+              x: x + relativeX,
+              y: y + relativeY,
+              radius: 4,
+              activation: 0,
+              driftOffset: Math.random() * Math.PI * 2
+            });
           }
-        },
-        "bubble": {
-          "distance": 400,
-          "size": 40,
-          "duration": 2,
-          "opacity": 8,
-          "speed": 3
-        },
-        "repulse": {
-          "distance": 200,
-          "duration": 0.4
-        },
-        "push": {
-          "particles_nb": 4
-        },
-        "remove": {
-          "particles_nb": 2
+        }
+
+        for (var i = 0; i < netNodes.length; i++) {
+          for (var j = 0; j < netNodes.length; j++) {
+            if (netNodes[j].layer === netNodes[i].layer + 1) {
+              netConnections.push({
+                from: netNodes[i],
+                to: netNodes[j],
+                weight: 0.3 + Math.random() * 0.7
+              });
+            }
+          }
+        }
+
+        networks.push({
+          nodes: netNodes,
+          connections: netConnections,
+          signals: netSignals,
+          driftOffset: Math.random() * Math.PI * 2,
+          x: x,
+          y: y,
+          vx: vx,
+          vy: vy,
+          w: w,
+          h: h
+        });
+      }
+    };
+
+    setupNetworks();
+
+    var triggerForwardPass = function (net, startNodeId) {
+      var startNode = net.nodes[startNodeId];
+      if (!startNode) return;
+
+      startNode.activation = 1.0;
+
+      for (var i = 0; i < net.connections.length; i++) {
+        if (net.connections[i].from.id === startNodeId) {
+          net.signals.push({
+            from: net.connections[i].from,
+            to: net.connections[i].to,
+            progress: 0,
+            speed: 0.03 + Math.random() * 0.02
+          });
         }
       }
-    },
-    "retina_detect": true
-  });
+    };
 
+    var mouse = { x: -1000, y: -1000 };
+    container.addEventListener('mousemove', function (e) {
+      var rect = canvas.getBoundingClientRect();
+      mouse.x = e.clientX - rect.left;
+      mouse.y = e.clientY - rect.top;
+    });
+
+    container.addEventListener('mouseleave', function () {
+      mouse.x = -1000;
+      mouse.y = -1000;
+    });
+
+    container.addEventListener('click', function (e) {
+      var rect = canvas.getBoundingClientRect();
+      var clickX = e.clientX - rect.left;
+      var clickY = e.clientY - rect.top;
+
+      var closestNode = null;
+      var closestNet = null;
+      var minDist = 80;
+
+      for (var k = 0; k < networks.length; k++) {
+        var net = networks[k];
+        for (var i = 0; i < net.nodes.length; i++) {
+          if (net.nodes[i].layer === 0) {
+            var dx = net.nodes[i].x - clickX;
+            var dy = net.nodes[i].y - clickY;
+            var dist = Math.sqrt(dx * dx + dy * dy);
+            if (dist < minDist) {
+              minDist = dist;
+              closestNode = net.nodes[i];
+              closestNet = net;
+            }
+          }
+        }
+      }
+
+      if (closestNode && closestNet) {
+        triggerForwardPass(closestNet, closestNode.id);
+      } else {
+        var randomNet = networks[Math.floor(Math.random() * networks.length)];
+        var inputNodes = randomNet.nodes.filter(function (n) { return n.layer === 0; });
+        if (inputNodes.length > 0) {
+          var randomInput = inputNodes[Math.floor(Math.random() * inputNodes.length)];
+          triggerForwardPass(randomNet, randomInput.id);
+        }
+      }
+    });
+
+    setInterval(function () {
+      if (networks.length === 0) return;
+      var randomNet = networks[Math.floor(Math.random() * networks.length)];
+      var inputNodes = randomNet.nodes.filter(function (n) { return n.layer === 0; });
+      if (inputNodes.length > 0) {
+        var randomInput = inputNodes[Math.floor(Math.random() * inputNodes.length)];
+        triggerForwardPass(randomNet, randomInput.id);
+      }
+    }, 1500);
+
+    var time = 0;
+
+    var animate = function () {
+      time += 0.5;
+      ctx.clearRect(0, 0, width, height);
+
+      // Update network and node positions
+      for (var k = 0; k < networks.length; k++) {
+        var net = networks[k];
+        net.x += net.vx;
+        net.y += net.vy;
+
+        var margin = 60;
+        if (net.x < margin) {
+          net.x = margin;
+          net.vx = Math.abs(net.vx);
+        } else if (net.x > width - margin) {
+          net.x = width - margin;
+          net.vx = -Math.abs(net.vx);
+        }
+
+        if (net.y < margin) {
+          net.y = margin;
+          net.vy = Math.abs(net.vy);
+        } else if (net.y > height - margin) {
+          net.y = height - margin;
+          net.vy = -Math.abs(net.vy);
+        }
+
+        var globalDriftX = Math.sin(time * 0.015 + net.driftOffset) * 8;
+        var globalDriftY = Math.cos(time * 0.02 + net.driftOffset) * 6;
+
+        for (var i = 0; i < net.nodes.length; i++) {
+          var n = net.nodes[i];
+          n.x = net.x + n.relX + globalDriftX + Math.sin(time * 0.05 + n.driftOffset) * 3;
+          n.y = net.y + n.relY + globalDriftY + Math.cos(time * 0.05 + n.driftOffset) * 3;
+          n.activation *= 0.94;
+
+          var dx = n.x - mouse.x;
+          var dy = n.y - mouse.y;
+          var dist = Math.sqrt(dx * dx + dy * dy);
+          if (dist < 45) {
+            n.activation = Math.max(n.activation, (45 - dist) / 45);
+          }
+        }
+      }
+
+      // Compute dynamic merging connections (bridges)
+      var bridgeConnections = [];
+      for (var k = 0; k < networks.length; k++) {
+        var netA = networks[k];
+        for (var m = k + 1; m < networks.length; m++) {
+          var netB = networks[m];
+          for (var i = 0; i < netA.nodes.length; i++) {
+            var nodeA = netA.nodes[i];
+            for (var j = 0; j < netB.nodes.length; j++) {
+              var nodeB = netB.nodes[j];
+              var dx = nodeA.x - nodeB.x;
+              var dy = nodeA.y - nodeB.y;
+              var dist = Math.sqrt(dx * dx + dy * dy);
+              if (dist < 75) {
+                var fromNode = nodeA.x < nodeB.x ? nodeA : nodeB;
+                var toNode = nodeA.x < nodeB.x ? nodeB : nodeA;
+                bridgeConnections.push({
+                  from: fromNode,
+                  to: toNode,
+                  dist: dist,
+                  netFrom: nodeA.x < nodeB.x ? netA : netB,
+                  netTo: nodeA.x < nodeB.x ? netB : netA
+                });
+              }
+            }
+          }
+        }
+      }
+
+      // Draw dynamic bridge connections
+      for (var b = 0; b < bridgeConnections.length; b++) {
+        var bc = bridgeConnections[b];
+        var intensity = (1 - (bc.dist / 75)) * 0.15 * (1 + (bc.from.activation + bc.to.activation) * 1.5);
+        ctx.beginPath();
+        ctx.moveTo(bc.from.x, bc.from.y);
+        ctx.lineTo(bc.to.x, bc.to.y);
+        ctx.strokeStyle = 'rgba(255, 255, 255, ' + intensity + ')';
+        ctx.lineWidth = 1.0;
+        ctx.stroke();
+      }
+
+      // Update and draw internal network components
+      for (var k = 0; k < networks.length; k++) {
+        var net = networks[k];
+
+        var nextSignals = [];
+        for (var s = 0; s < net.signals.length; s++) {
+          var sig = net.signals[s];
+          sig.progress += sig.speed;
+
+          if (sig.progress < 1) {
+            nextSignals.push(sig);
+          } else {
+            sig.to.activation = 1.0;
+            var targetId = sig.to.id;
+
+            // Internal propagation
+            for (var c = 0; c < net.connections.length; c++) {
+              if (net.connections[c].from.id === targetId) {
+                nextSignals.push({
+                  from: net.connections[c].from,
+                  to: net.connections[c].to,
+                  progress: 0,
+                  speed: 0.03 + Math.random() * 0.02
+                });
+              }
+            }
+
+            // Bridge propagation (limit to prevent signal storm)
+            for (var b = 0; b < bridgeConnections.length; b++) {
+              var bc = bridgeConnections[b];
+              if (bc.from === sig.to && bc.netTo.signals.length < 4) {
+                bc.netTo.signals.push({
+                  from: bc.from,
+                  to: bc.to,
+                  progress: 0,
+                  speed: 0.03 + Math.random() * 0.02
+                });
+              }
+            }
+          }
+        }
+        net.signals = nextSignals;
+
+        // Draw internal synapses
+        for (var c = 0; c < net.connections.length; c++) {
+          var conn = net.connections[c];
+          var intensity = 0.05 + (conn.from.activation + conn.to.activation) * 0.15;
+          ctx.beginPath();
+          ctx.moveTo(conn.from.x, conn.from.y);
+          ctx.lineTo(conn.to.x, conn.to.y);
+          ctx.strokeStyle = 'rgba(255, 255, 255, ' + intensity + ')';
+          ctx.lineWidth = conn.weight * 1.5;
+          ctx.stroke();
+        }
+
+        // Draw signals (including bridge signals)
+        for (var s = 0; s < net.signals.length; s++) {
+          var sig = net.signals[s];
+          var sx = sig.from.x + (sig.to.x - sig.from.x) * sig.progress;
+          var sy = sig.from.y + (sig.to.y - sig.from.y) * sig.progress;
+
+          ctx.beginPath();
+          ctx.arc(sx, sy, 3, 0, Math.PI * 2);
+          ctx.fillStyle = '#fff';
+          ctx.shadowBlur = 10;
+          ctx.shadowColor = '#52b788';
+          ctx.fill();
+          ctx.shadowBlur = 0;
+        }
+
+        // Draw nodes
+        for (var i = 0; i < net.nodes.length; i++) {
+          var n = net.nodes[i];
+          ctx.beginPath();
+          ctx.arc(n.x, n.y, n.radius + (n.activation * 3), 0, Math.PI * 2);
+
+          var alpha = 0.3 + (n.activation * 0.7);
+          ctx.fillStyle = 'rgba(255, 255, 255, ' + alpha + ')';
+
+          if (n.activation > 0.1) {
+            ctx.shadowBlur = n.activation * 15;
+            ctx.shadowColor = '#52b788';
+          }
+          ctx.fill();
+          ctx.shadowBlur = 0;
+
+          ctx.beginPath();
+          ctx.arc(n.x, n.y, n.radius + 6, 0, Math.PI * 2);
+          ctx.strokeStyle = 'rgba(255, 255, 255, ' + (0.1 + n.activation * 0.3) + ')';
+          ctx.lineWidth = 1;
+          ctx.stroke();
+        }
+      }
+
+      requestAnimationFrame(animate);
+    };
+
+    animate();
+  };
+
+  initNeuralNet();
 }, false);
