@@ -4,11 +4,12 @@
 
 <div class="timeline-container">
   <div class="timeline-item">
-    <div class="timeline-date">1-3 Sep 2026</div>
+    <div class="timeline-date">Sep 2026</div>
     <div class="timeline-badge"></div>
     <div class="timeline-content">
       <span class="talk-event">Mathematical Foundations of AI: The Erlangen Hub Conference</span>
-      <span class="talk-title">Poster — "Understanding and inverse design of implicit bias in stochastic learning: a geometric perspective"</span>
+      <span class="talk-title">Poster — "Understanding and inverse design of implicit bias in stochastic learning: a
+        geometric perspective"</span>
       <span class="talk-location">University of Oxford, Oxford, United Kingdom.</span>
       <span class="talk-links">
         <a href="https://erlangenhub.ox.ac.uk/event/the-erlangen-hub-conference-2026/" target="_blank">link</a>
@@ -17,7 +18,21 @@
   </div>
 
   <div class="timeline-item">
-    <div class="timeline-date">17 June 2026</div>
+    <div class="timeline-date">July 2026</div>
+    <div class="timeline-badge"></div>
+    <div class="timeline-content">
+      <span class="talk-event">Advanced School in Applied Machine Learning: Uncertainty and Robustness of DL Models for
+        Science</span>
+      <span class="talk-title"></span>
+      <span class="talk-location">International Center for Theoretical Physics (ICTP), Trieste, Italy.</span>
+      <span class="talk-links">
+        <a href="https://indico.ictp.it/event/11154" target="_blank">link</a>
+      </span>
+    </div>
+  </div>
+
+  <div class="timeline-item">
+    <div class="timeline-date">June 2026</div>
     <div class="timeline-badge"></div>
     <div class="timeline-content">
       <span class="talk-event">ICTP-INdAM-SLMath Summer Graduate School for Machine Learning</span>
@@ -30,21 +45,23 @@
   </div>
 
   <div class="timeline-item">
-    <div class="timeline-date">25 Feb 2026</div>
+    <div class="timeline-date">Feb 2026</div>
     <div class="timeline-badge"></div>
     <div class="timeline-content">
-      <span class="talk-event">IX International Workshop on Information Geometry, Quantum Mechanics and Applications</span>
+      <span class="talk-event">IX International Workshop on Information Geometry, Quantum Mechanics and
+        Applications</span>
       <span class="talk-title">Invited talk — "Implicit bias in overparameterized models as a gauge correction."</span>
       <span class="talk-location">Institute of Mathematical Sciences (ICMAT), Madrid, Spain.</span>
       <span class="talk-links">
         <a href="http://www.q-math.es/conferences/IGQMA2026/" target="_blank">link</a>
-        <a href="https://drive.google.com/file/d/1pGGccxuXEj0VS_clxhZikJzEhM72F43w/view?usp=sharing" target="_blank">slides</a>
+        <a href="https://drive.google.com/file/d/1pGGccxuXEj0VS_clxhZikJzEhM72F43w/view?usp=sharing"
+          target="_blank">slides</a>
       </span>
     </div>
   </div>
 
   <div class="timeline-item">
-    <div class="timeline-date">10-18 Jul 2025</div>
+    <div class="timeline-date">Jul 2025</div>
     <div class="timeline-badge"></div>
     <div class="timeline-content">
       <span class="talk-event">Advanced School on Foundation Models for Scientific Discovery</span>
@@ -57,191 +74,218 @@
 </div>
 
 <style>
-.timeline-container {
-  position: relative;
-  padding-left: 30px;
-  margin: 40px 0;
-  text-align: left;
-}
-.timeline-container::before {
-  content: '';
-  position: absolute;
-  left: 8px;
-  top: 5px;
-  bottom: 5px;
-  width: 2px;
-  background: var(--timeline-line);
-  transition: background-color 0.4s ease;
-}
-.timeline-item {
-  position: relative;
-  margin-bottom: 35px;
-  opacity: 0;
-  transform: translateY(30px);
-  transition: opacity 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94),
-              transform 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-}
-.timeline-item:last-child {
-  margin-bottom: 0;
-}
-.timeline-item.visible {
-  opacity: 1;
-  transform: translateY(0);
-}
-.timeline-item.visible .timeline-badge {
-  transform: scale(1);
-  background-color: var(--theme-color);
-  box-shadow: 0 0 0 3px rgba(var(--theme-color-rgb), 0.2), 0 0 8px rgba(var(--theme-color-rgb), 0.4);
-}
-.timeline-date {
-  font-weight: 700;
-  color: #6c757d;
-  font-size: 0.9rem;
-  margin-bottom: 6px;
-  display: block;
-}
-.timeline-badge {
-  position: absolute;
-  left: -28px;
-  top: 36px;
-  width: 14px;
-  height: 14px;
-  border-radius: 50%;
-  background-color: #ced4da;
-  border: 3px solid #fff;
-  z-index: 2;
-  transform: scale(0.5);
-  transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275),
-              background-color 0.5s ease,
-              box-shadow 0.5s ease;
-}
-[data-theme="dark"] .timeline-badge {
-  border-color: var(--bg-color);
-}
-.timeline-content {
-  background: var(--card-bg);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-  padding: 18px 20px;
-  border-radius: 8px;
-  border: 1px solid var(--card-border);
-  box-shadow: var(--card-shadow);
-  position: relative;
-  transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease, background-color 0.4s ease;
-}
-.timeline-content:hover {
-  transform: translateY(-2px);
-  box-shadow: var(--card-shadow-hover);
-  border-color: var(--card-border-hover);
-}
-.timeline-content span {
-  display: block;
-}
-.timeline-content .talk-event {
-  font-weight: 700;
-  color: var(--theme-color);
-  font-size: 0.95rem;
-  margin-bottom: 6px;
-  transition: color 0.4s ease;
-}
-.timeline-content .talk-title {
-  font-style: italic;
-  color: var(--heading-color);
-  font-size: 1.05rem;
-  line-height: 1.5;
-  margin-bottom: 6px;
-  transition: color 0.4s ease;
-}
-.timeline-content .talk-location {
-  font-style: normal;
-  color: #6c757d;
-  font-size: 0.9rem;
-  margin-bottom: 6px;
-}
-.timeline-content .talk-links {
-  margin-top: 8px;
-}
-.timeline-content .talk-links a {
-  color: var(--link-color);
-  text-decoration: none;
-  font-weight: 700;
-  margin-right: 15px;
-  font-size: 0.85rem;
-}
-.timeline-content .talk-links a::before {
-  content: "[";
-  color: #6c757d;
-  font-weight: normal;
-}
-.timeline-content .talk-links a::after {
-  content: "]";
-  color: #6c757d;
-  font-weight: normal;
-}
-
-/* Desktop layout (cards align to main container, timeline & dates float in the left gutter) */
-@media only screen and (min-width: 900px) {
   .timeline-container {
-    padding-left: 0;
-  }
-  .timeline-container::before {
-    left: -25px;
-  }
-  .timeline-date {
-    position: absolute;
-    left: -160px;
-    width: 120px;
-    text-align: right;
-    margin-bottom: 0;
-    margin-top: 0;
-    top: 15px;
-    font-size: 0.9rem;
-    display: block;
-  }
-  .timeline-badge {
-    position: absolute;
-    left: -31px;
-    top: 18px;
-    margin-right: 0;
-    flex-shrink: 0;
-  }
-  .timeline-content {
-    flex-grow: 1;
-  }
-}
-
-/* Intermediate tablet layout: keep dates inside container to avoid viewport clipping */
-@media only screen and (min-width: 650px) and (max-width: 899px) {
-  .timeline-container {
-    padding-left: 0;
-  }
-  .timeline-container::before {
-    left: 120px;
-  }
-  .timeline-item {
-    display: flex;
-    align-items: flex-start;
-  }
-  .timeline-date {
-    width: 100px;
-    text-align: right;
-    padding-right: 20px;
-    margin-bottom: 0;
-    margin-top: 15px;
-    flex-shrink: 0;
-    display: block;
-  }
-  .timeline-badge {
     position: relative;
-    left: 4px;
-    top: 18px;
-    margin-right: 16px;
-    flex-shrink: 0;
+    padding-left: 30px;
+    margin: 40px 0;
+    text-align: left;
   }
+
+  .timeline-container::before {
+    content: '';
+    position: absolute;
+    left: 8px;
+    top: 5px;
+    bottom: 5px;
+    width: 2px;
+    background: var(--timeline-line);
+    transition: background-color 0.4s ease;
+  }
+
+  .timeline-item {
+    position: relative;
+    margin-bottom: 35px;
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+      transform 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  }
+
+  .timeline-item:last-child {
+    margin-bottom: 0;
+  }
+
+  .timeline-item.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .timeline-item.visible .timeline-badge {
+    transform: scale(1);
+    background-color: var(--theme-color);
+    box-shadow: 0 0 0 3px rgba(var(--theme-color-rgb), 0.2), 0 0 8px rgba(var(--theme-color-rgb), 0.4);
+  }
+
+  .timeline-date {
+    font-weight: 700;
+    color: #6c757d;
+    font-size: 0.9rem;
+    margin-bottom: 6px;
+    display: block;
+  }
+
+  .timeline-badge {
+    position: absolute;
+    left: -28px;
+    top: 36px;
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background-color: #ced4da;
+    border: 3px solid #fff;
+    z-index: 2;
+    transform: scale(0.5);
+    transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275),
+      background-color 0.5s ease,
+      box-shadow 0.5s ease;
+  }
+
+  [data-theme="dark"] .timeline-badge {
+    border-color: var(--bg-color);
+  }
+
   .timeline-content {
-    flex-grow: 1;
+    background: var(--card-bg);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    padding: 18px 20px;
+    border-radius: 8px;
+    border: 1px solid var(--card-border);
+    box-shadow: var(--card-shadow);
+    position: relative;
+    transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease, background-color 0.4s ease;
   }
-}
+
+  .timeline-content:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--card-shadow-hover);
+    border-color: var(--card-border-hover);
+  }
+
+  .timeline-content span {
+    display: block;
+  }
+
+  .timeline-content .talk-event {
+    font-weight: 700;
+    color: var(--theme-color);
+    font-size: 0.95rem;
+    margin-bottom: 6px;
+    transition: color 0.4s ease;
+  }
+
+  .timeline-content .talk-title {
+    font-style: italic;
+    color: var(--heading-color);
+    font-size: 1.05rem;
+    line-height: 1.5;
+    margin-bottom: 6px;
+    transition: color 0.4s ease;
+  }
+
+  .timeline-content .talk-location {
+    font-style: normal;
+    color: #6c757d;
+    font-size: 0.9rem;
+    margin-bottom: 6px;
+  }
+
+  .timeline-content .talk-links {
+    margin-top: 8px;
+  }
+
+  .timeline-content .talk-links a {
+    color: var(--link-color);
+    text-decoration: none;
+    font-weight: 700;
+    margin-right: 15px;
+    font-size: 0.85rem;
+  }
+
+  .timeline-content .talk-links a::before {
+    content: "[";
+    color: #6c757d;
+    font-weight: normal;
+  }
+
+  .timeline-content .talk-links a::after {
+    content: "]";
+    color: #6c757d;
+    font-weight: normal;
+  }
+
+  /* Desktop layout (cards align to main container, timeline & dates float in the left gutter) */
+  @media only screen and (min-width: 900px) {
+    .timeline-container {
+      padding-left: 0;
+    }
+
+    .timeline-container::before {
+      left: -25px;
+    }
+
+    .timeline-date {
+      position: absolute;
+      left: -160px;
+      width: 120px;
+      text-align: right;
+      margin-bottom: 0;
+      margin-top: 0;
+      top: 15px;
+      font-size: 0.9rem;
+      display: block;
+    }
+
+    .timeline-badge {
+      position: absolute;
+      left: -31px;
+      top: 18px;
+      margin-right: 0;
+      flex-shrink: 0;
+    }
+
+    .timeline-content {
+      flex-grow: 1;
+    }
+  }
+
+  /* Intermediate tablet layout: keep dates inside container to avoid viewport clipping */
+  @media only screen and (min-width: 650px) and (max-width: 899px) {
+    .timeline-container {
+      padding-left: 0;
+    }
+
+    .timeline-container::before {
+      left: 120px;
+    }
+
+    .timeline-item {
+      display: flex;
+      align-items: flex-start;
+    }
+
+    .timeline-date {
+      width: 100px;
+      text-align: right;
+      padding-right: 20px;
+      margin-bottom: 0;
+      margin-top: 15px;
+      flex-shrink: 0;
+      display: block;
+    }
+
+    .timeline-badge {
+      position: relative;
+      left: 4px;
+      top: 18px;
+      margin-right: 16px;
+      flex-shrink: 0;
+    }
+
+    .timeline-content {
+      flex-grow: 1;
+    }
+  }
 </style>
 
 <script>
